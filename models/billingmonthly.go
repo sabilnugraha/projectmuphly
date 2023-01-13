@@ -11,4 +11,5 @@ type BillingMonthly struct {
 	Ops         int       `json:"ops"`
 	Monthly     int       `json:"monthly"`
 	Dormitory   int       `json:"dormitory"`
+	Status      string    `json:"status"`
 }

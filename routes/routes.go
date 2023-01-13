@@ -7,4 +7,5 @@ func RouteInit(r *mux.Router) {
 	JournalRoutes(r)
 	StudentRoutes(r)
 	BillingRoutes(r)
+	NotificationRoutes(r)
 }

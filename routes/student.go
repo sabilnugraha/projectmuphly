@@ -2,6 +2,7 @@ package routes
 
 import (
 	"microservice/handlers"
+	"microservice/pkg/middleware"
 	"microservice/pkg/sql"
 	"microservice/repositories"
 
@@ -14,4 +15,6 @@ func StudentRoutes(r *mux.Router) {
 	h := handlers.HandlerStudent(studentRepository)
 
 	r.HandleFunc("/addstudent", h.AddStudent).Methods("POST")
+	r.HandleFunc("/addphoto/{id}", middleware.UploadFile(h.AddPhoto)).Methods("PATCH")
+	r.HandleFunc("/student/{nis}", h.GetNIS).Methods("GET")
 }

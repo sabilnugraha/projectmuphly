@@ -68,7 +68,7 @@ func (h *journalHandler) InputJournal(w http.ResponseWriter, r *http.Request) {
 	// data form pattern submit to pattern entity db product
 	journal := models.Journal{
 		IdTransaction: idtrans,
-		Desc:          r.FormValue("desc"),
+		Uraian:        r.FormValue("uraian"),
 		OpsInput:      opsinput,
 		OpsOutput:     opsoutput,
 		MonthlyInput:  monthlyinput,
@@ -76,25 +76,6 @@ func (h *journalHandler) InputJournal(w http.ResponseWriter, r *http.Request) {
 		MahadInput:    mahadinput,
 		MahadOutput:   mahadoutput,
 	}
-
-	// if request.OpsInput > 0 {
-	// 	journal.OpsInput = request.OpsInput
-	// }
-	// if request.OpsOutput > 0 {
-	// 	journal.OpsOutput = request.OpsOutput
-	// }
-	// if request.MonthlyInput > 0 {
-	// 	journal.MonthlyInput = request.MonthlyInput
-	// }
-	// if request.MonthlyOutput > 0 {
-	// 	journal.MonthlyOutput = request.MonthlyOutput
-	// }
-	// if request.MahadInput > 0 {
-	// 	journal.MahadInput = request.MahadInput
-	// }
-	// if request.MahadOutput > 0 {
-	// 	journal.MahadOutput = request.MahadOutput
-	// }
 
 	data, err := h.JournalRepository.InputJournal(journal)
 	if err != nil {

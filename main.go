@@ -30,6 +30,9 @@ func main() {
 	r := mux.NewRouter()
 	routes.RouteInit(r.PathPrefix("/api/v1").Subrouter())
 
+	//path file
+	r.PathPrefix("/images").Handler(http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
+
 	var AllowedHeaders = handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	var AllowedMethods = handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "PATCH", "DELETE"})
 	var AllowedOrigins = handlers.AllowedOrigins([]string{"*"})
