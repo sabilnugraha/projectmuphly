@@ -9,6 +9,8 @@ import (
 func RunMigration() {
 	err := sql.DB.AutoMigrate(
 		&models.Admin{},
+		&models.Groupclass{},
+		&models.SubClass{},
 		&models.User{},
 		&models.Journal{},
 		&models.BillingMonthly{},

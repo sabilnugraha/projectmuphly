@@ -8,3 +8,9 @@ type Notification struct {
 	Type                   string `json:"type" gorm:"type: varchar(255)"`
 	Status                 string `json:"status" gorm:"type: varchar(255)"`
 }
+
+type GetNotification struct {
+	Type    string `json:"type" gorm:"type: varchar(255)"`
+	Status  string `json:"status" gorm:"type: varchar(255)"`
+	AdminID int    `json:"admin_id"`
+}

@@ -7,10 +7,12 @@ import (
 )
 
 type StudentRepository interface {
-	AddStudent(product models.User) (models.User, error)
+	AddStudent(user models.User) (models.User, error)
 	GetStudent(Id int) (models.User, error)
 	AddPhoto(product models.User) (models.User, error)
 	GetNIS(Nis int) (models.User, error)
+	AddGroupClass(class models.Groupclass) (models.Groupclass, error)
+	AddSubClass(class models.SubClass) (models.SubClass, error)
 }
 
 func RepositoryStudent(db *gorm.DB) *repository {
@@ -21,6 +23,18 @@ func (r *repository) AddStudent(student models.User) (models.User, error) {
 	err := r.db.Create(&student).Error
 
 	return student, err
+}
+
+func (r *repository) AddGroupClass(class models.Groupclass) (models.Groupclass, error) {
+	err := r.db.Create(&class).Error
+
+	return class, err
+}
+
+func (r *repository) AddSubClass(class models.SubClass) (models.SubClass, error) {
+	err := r.db.Create(&class).Error
+
+	return class, err
 }
 
 func (r *repository) GetStudent(Id int) (models.User, error) {

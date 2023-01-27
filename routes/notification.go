@@ -2,6 +2,7 @@ package routes
 
 import (
 	"microservice/handlers"
+	"microservice/pkg/middleware"
 	"microservice/pkg/sql"
 
 	"microservice/repositories"
@@ -16,4 +17,8 @@ func NotificationRoutes(r *mux.Router) {
 	h := handlers.HandlerNotification(notificationRepository)
 
 	r.HandleFunc("/addnotification", h.AddNotification).Methods("POST")
+	r.HandleFunc("/notification", h.GetNotification).Methods("GET")
+	r.HandleFunc("/position", h.GetAllAdminByPosition).Methods("POST")
+	r.HandleFunc("/adminnotification", middleware.Auth(h.FindNotificationtId)).Methods("GET")
+
 }

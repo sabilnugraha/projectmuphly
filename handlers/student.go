@@ -8,6 +8,7 @@ import (
 	"microservice/repositories"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -36,6 +37,7 @@ func (h *studentHandler) AddStudent(w http.ResponseWriter, r *http.Request) {
 	nisn, _ := strconv.Atoi(r.FormValue("nisn"))
 	nik, _ := strconv.Atoi(r.FormValue("nik"))
 	angkgatan, _ := strconv.Atoi(r.FormValue("angkatan"))
+	birthdate, _ := time.Parse("2006-01-02", r.FormValue("birthdate"))
 	request := studentdto.User{
 		FullName:   r.FormValue("fullname"),
 		Nis:        nis,
@@ -48,7 +50,7 @@ func (h *studentHandler) AddStudent(w http.ResponseWriter, r *http.Request) {
 		Nik:        nik,
 		NickName:   r.FormValue("nickname"),
 		BirthPlace: r.FormValue("birthplace"),
-		//BirthDate:  request.BirthDate,
+		BirthDate:  birthdate,
 	}
 
 	validation := validator.New()
@@ -66,8 +68,8 @@ func (h *studentHandler) AddStudent(w http.ResponseWriter, r *http.Request) {
 		Address:    request.Address,
 		Nik:        request.Nik,
 		Nisn:       request.Nisn,
-		Nis:        request.Nis,
 		BirthPlace: request.BirthPlace,
+		BirthDate:  request.BirthDate,
 	}
 
 	data, err := h.StudentRepository.AddStudent(student)
@@ -174,5 +176,68 @@ func (h *studentHandler) GetNIS(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Status: "success", Data: student}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *studentHandler) AddGroupClass(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// request := new(studentdto.RequestGroupclass)
+	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+	// 	json.NewEncoder(w).Encode(response)
+	// }
+
+	// validate := validator.New()
+	// err := validate.Struct(request)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
+
+	// startclass, _ := time.Parse("2006-01-02", request.Startclass.Format("2006-01-02"))
+	// endclassformat := request.Startclass.AddDate(3, 0, 0)
+	// endclass, _ := time.Parse("2006-01-02", endclassformat.Format("2006-01-02"))
+
+	// requestForm := models.Groupclass{
+	// 	Groupclass: request.Groupclass,
+	// 	Startclass: startclass,
+	// 	Endclass:   endclass,
+	// }
+	gc, _ := strconv.Atoi(r.FormValue("groupclass"))
+	startclass, _ := time.Parse("2006-01-02", r.FormValue("startclass"))
+	endclass := startclass.AddDate(3, 0, 0)
+	requestForm := studentdto.RequestGroupclass{
+		Groupclass: gc,
+		Startclass: startclass,
+		Endclass:   endclass,
+	}
+	validation := validator.New()
+	err := validation.Struct(requestForm)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	student := models.Groupclass{
+		Groupclass: requestForm.Groupclass,
+		Startclass: requestForm.Startclass,
+		Endclass:   requestForm.Endclass,
+	}
+
+	data, err := h.StudentRepository.AddGroupClass(student)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Status: "Success", Data: data}
 	json.NewEncoder(w).Encode(response)
 }

@@ -93,7 +93,7 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 		tempFile.Write(fileBytes)
 
 		data := tempFile.Name()
-		filename := data[8:] // split uploads/
+		filename := data[7:] // split uploads/
 
 		// add filename to ctx
 		ctx := context.WithValue(r.Context(), "dataFile", filename)
