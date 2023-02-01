@@ -23,4 +23,21 @@ type RequestGroupclass struct {
 	Groupclass int       `json:"groupclass"`
 	Startclass time.Time `json:"startclass" gorm:"default:current_timestamp"`
 	Endclass   time.Time `json:"endclass" gorm:"default:current_timestamp"`
+	Level      string    `json:"level" gorm:"type: varchar(255)"`
+}
+
+type RequestSubClass struct {
+	ID         int    `json:"id" gorm:"PRIMARY_KEY"`
+	Groupclass int    `json:"groupclass"`
+	Subclass   string `json:"subclass" gorm:"type: varchar(255)"`
+}
+
+type RequestStudentClass struct {
+	UserId  int `json:"userid"`
+	ClassId int `json:"classid"`
+}
+
+type RequestStudentSubClass struct {
+	UserId     int `json:"userid"`
+	SubClassId int `json:"subclassid"`
 }

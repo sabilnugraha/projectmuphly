@@ -16,6 +16,9 @@ func StudentRoutes(r *mux.Router) {
 
 	r.HandleFunc("/addstudent", h.AddStudent).Methods("POST")
 	r.HandleFunc("/addclass", h.AddGroupClass).Methods("POST")
+	r.HandleFunc("/addstudenttoclass", h.AddStudentToGroupClass).Methods("POST")
+	r.HandleFunc("/addsubclass", h.AddSubClass).Methods("POST")
+	r.HandleFunc("/addstudenttosubclass", h.AddStudentToSubClass).Methods("POST")
 	r.HandleFunc("/addphoto/{id}", middleware.UploadFile(h.AddPhoto)).Methods("PATCH")
 	r.HandleFunc("/student/{nis}", h.GetNIS).Methods("GET")
 }

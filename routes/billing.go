@@ -15,5 +15,6 @@ func BillingRoutes(r *mux.Router) {
 	h := handlers.HandlerBilling(billingRepository)
 
 	r.HandleFunc("/addbilling", h.AddBilling).Methods("POST")
+	r.HandleFunc("/studytempo/{id}", h.GetTempo).Methods("GET")
 
 }

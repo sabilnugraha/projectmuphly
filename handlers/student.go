@@ -182,31 +182,6 @@ func (h *studentHandler) GetNIS(w http.ResponseWriter, r *http.Request) {
 func (h *studentHandler) AddGroupClass(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	// request := new(studentdto.RequestGroupclass)
-	// if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-	// 	json.NewEncoder(w).Encode(response)
-	// }
-
-	// validate := validator.New()
-	// err := validate.Struct(request)
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-	// 	json.NewEncoder(w).Encode(response)
-	// 	return
-	// }
-
-	// startclass, _ := time.Parse("2006-01-02", request.Startclass.Format("2006-01-02"))
-	// endclassformat := request.Startclass.AddDate(3, 0, 0)
-	// endclass, _ := time.Parse("2006-01-02", endclassformat.Format("2006-01-02"))
-
-	// requestForm := models.Groupclass{
-	// 	Groupclass: request.Groupclass,
-	// 	Startclass: startclass,
-	// 	Endclass:   endclass,
-	// }
 	gc, _ := strconv.Atoi(r.FormValue("groupclass"))
 	startclass, _ := time.Parse("2006-01-02", r.FormValue("startclass"))
 	endclass := startclass.AddDate(3, 0, 0)
@@ -231,6 +206,112 @@ func (h *studentHandler) AddGroupClass(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data, err := h.StudentRepository.AddGroupClass(student)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Status: "Success", Data: data}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *studentHandler) AddSubClass(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	gc, _ := strconv.Atoi(r.FormValue("groubclass"))
+	requestForm := studentdto.RequestSubClass{
+		Groupclass: gc,
+		Subclass:   r.FormValue("subclass"),
+	}
+	validation := validator.New()
+	err := validation.Struct(requestForm)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	student := models.SubClass{
+		Groupclass: requestForm.Groupclass,
+		Subclass:   requestForm.Subclass,
+	}
+
+	data, err := h.StudentRepository.AddSubClass(student)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Status: "Success", Data: data}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *studentHandler) AddStudentToGroupClass(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	id, _ := strconv.Atoi(r.FormValue("userid"))
+	class, _ := strconv.Atoi(r.FormValue("classid"))
+
+	requestForm := studentdto.RequestStudentClass{
+		UserId:  id,
+		ClassId: class,
+	}
+	validation := validator.New()
+	err := validation.Struct(requestForm)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	student := models.ClassUser{
+		UserID:       uint(requestForm.UserId),
+		GroupclassID: uint(requestForm.ClassId),
+	}
+
+	data, err := h.StudentRepository.AddStudentToGroupClass(student)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Status: "Success", Data: data}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *studentHandler) AddStudentToSubClass(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	id, _ := strconv.Atoi(r.FormValue("userid"))
+	class, _ := strconv.Atoi(r.FormValue("subclassid"))
+
+	requestForm := studentdto.RequestStudentSubClass{
+		UserId:     id,
+		SubClassId: class,
+	}
+	validation := validator.New()
+	err := validation.Struct(requestForm)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	student := models.SubclassUser{
+		UserID:     uint(requestForm.UserId),
+		SubClassID: uint(requestForm.SubClassId),
+	}
+
+	data, err := h.StudentRepository.AddStudentToSubClass(student)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
